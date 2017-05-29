@@ -10,9 +10,10 @@
   - [Run ansible-playbook](#p12)
 
 
-- [Description of the playbook and configuration variables](#p2)
-  - [Description of the playbook](#p21)
-  - [Configuration of the web app](#p22)
+
+- [Description of the playbook](#p2)
+
+- [Configuration of the web app](#p3)
 
 
 
@@ -65,11 +66,9 @@ This will deploy the web app to the local host.
 To deploy to other hosts, edit the inventory file in the WebAppDeploymentAutomation directory.
 
 
-<a name="p2" id="p2"></a>
-## Description of the playbook and configuration variables
 
-<a name="p21" id="p21"></a>
-### Description of the playbook
+<a name="p2" id="p2"></a>
+## Description of the playbook
 
 
 The playbook invokes several roles:
@@ -113,11 +112,69 @@ where
 
 
 
-<a name="p22" id="p22"></a>
-### Configuration of the web app
+<a name="p3" id="p3"></a>
+## Configuration of the web app
 
 
-The app role includes the file roles/app/defaults/main.yml which defines application configuration, including: 
+The app role includes the file roles/app/defaults/main.yml that defines application configuration. 
+Additionally, group-level variables are defined in group_vars/all
+
+
+
+
+
+<a name="p31" id="p31"></a>
+## File group_vars/all
+
+
+
+The file group_vars/all defines application configuration, including: 
+
+- the location where to deploy the web app: variable project_dir
+
+- the minimum required Python version;
+
+- the directory where to store the JSON documents POSTed by client: varible service_document_root;
+
+
+```yaml
+
+$ more group_vars/all 
+---
+#
+# Settings defined here:
+#
+# 1. Override role defaults, e.g., ../roles/*/defaults
+#
+# 2. Are overriden by role vars, e.g., ../roles/*/vars
+#
+
+project_dir: /tmp/Scheduler_app
+
+python_version: 2.6
+python_virtualenv_path: "{{ project_dir}}/venv"
+
+app_dir:  "{{ project_dir}}/app"
+
+
+#
+# If http/https proxy is needed, set the environment 
+# variable http_proxy and https_proxy or set the 
+# variables below. Setting the variables here is 
+# needed when different host groups use different proxies.
+#
+#http_proxy: YOUR_HTTP_PROXY
+#https_proxy: YOUR_HTTPS_PROXY
+```
+
+
+
+
+<a name="p32" id="p32"></a>
+## File roles/app/defaults/main.yml
+
+
+The file roles/app/defaults/main.yml defines application configuration, including: 
 
 - the location of the SSL certificates used by the web app: variable ssl_cert_root;
 
@@ -159,4 +216,8 @@ service_document_root: "{{ app_dir}}/status"
 # Log directory of the web service
 #
 service_log_dir: "{{ app_dir}}/log"
+
+
+
+
 
