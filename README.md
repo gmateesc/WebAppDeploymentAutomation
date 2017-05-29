@@ -57,7 +57,8 @@ Then set GIT_USER and GIT_PASSWORD for accessing the Git repository for the
 Web Service and run the playbook deploy_web_service.yml 
 
 ```shell
-$ ansible-playbook  -e gituser=$GIT_USER -e gitpassword=$GIT_PASSWORD deploy_web_service.yml
+  $ ansible-playbook -e gituser=$GIT_USER -e gitpassword=$GIT_PASSWORD deploy_web_service.yml 2>&1 \
+                     | tee deploy_web_service.log
 ```
 
 
