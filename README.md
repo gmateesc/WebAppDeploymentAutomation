@@ -60,10 +60,10 @@ $ ansible-playbook  -e gituser=$GIT_USER -e gitpassword=$GIT_PASSWORD deploy_web
 ```
 
 
-This will deploy the web app to the local host. 
+This will deploy the web app to the local host. An example output from running the playbook is shown [here](https://github.com/gmateesc/WebAppDeploymentAutomation/blob/master/doc/deploy_web_service.log).
 
 
-To deploy to other hosts, edit the inventory file in the WebAppDeploymentAutomation directory.
+To deploy to other hosts, edit the inventory file in the WebAppDeploymentAutomation directory and add the hosts.
 
 
 
