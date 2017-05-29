@@ -1,0 +1,4 @@
+---
+
+git_repo_link:  github.com/DoodleScheduling/devops-gabriel-mateescu
+git_repo_url: "https://{{ gituser | urlencode }}:{{ gitpassword }}@{{ git_repo_link }}"

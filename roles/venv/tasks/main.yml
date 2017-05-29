@@ -1,0 +1,19 @@
+#
+# Create a virtual env under the directory
+#
+#   {{ python_virtualenv_path }}
+#
+# and install in it the Flask framework and the packages required by it.
+#
+
+- name: Ensure virtualenv is installed
+  pip:
+    name: virtualenv
+  become: yes
+  environment: "{{ proxy_env }}"
+
+- name: Install required python packages in the virtual env "{{ python_virtualenv_path }}"
+  pip:
+    requirements: "{{ app_dir }}/WebService/dependencies/requirements.txt"
+    virtualenv: "{{ python_virtualenv_path }}"
+  environment: "{{ proxy_env }}"

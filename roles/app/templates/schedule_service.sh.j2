@@ -1,0 +1,88 @@
+#!/bin/bash
+
+#
+# Start and stop the web service
+#
+
+
+service_prefix=$(basename {{ service_code }} .py)
+pid_file=${service_prefix}.pid
+
+
+start() {
+
+  cd {{ python_virtualenv_path }} && source bin/activate
+
+  {{ app_dir }}/{{ service_name }}/{{ service_code }} >> {{ service_log_dir }}/web_service.log 2>&1 &
+
+  echo $! > {{ app_dir }}/{{ service_name }}/$pid_file
+
+}
+
+
+
+status() {
+
+  if [ -f {{ app_dir }}/{{ service_name }}/$pid_file ]; then
+    pid=$(cat {{ app_dir }}/{{ service_name }}/$pid_file)
+    ps -p $pid > /dev/null 2>&1
+    if [ $? -eq 0 ]; then 
+      echo "Service {{ service_code }} is running (PID = $pid)"
+    else
+      echo "Service {{ service_code }} is NOT running but pid file $pid_file exists"
+    fi
+  else
+    echo "Service {{ service_code }} is not running"
+  fi
+
+  return 0
+}
+
+
+
+stop () {
+
+  if [ -f {{ app_dir }}/{{ service_name }}/$pid_file ]; then
+
+    pid=$(cat {{ app_dir }}/{{ service_name }}/$pid_file)
+
+    ps -p $pid > /dev/null 2>&1
+    if [ $? -eq 0 ]; then 
+      procs=$(ps -o pgid -p $pid 2>/dev/null | egrep -v PGID | awk '{print $1}')   
+      for proc in $procs; do
+        kill -- -${proc} 
+      done
+    fi
+ 
+  fi  
+
+  rm -r $pid_file
+
+}
+
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  status)
+    status
+    exit $?
+    ;;
+  retart)
+    stop
+    start
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|status}"
+esac
+
+
+
+
+
+
+

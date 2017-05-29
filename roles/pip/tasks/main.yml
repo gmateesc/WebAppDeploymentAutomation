@@ -1,0 +1,32 @@
+---
+#
+# Check that pip is installed and is version {{ pip_version }} or later 
+#
+- name: Get the version of pip, if it is installed
+  shell: pip --version 2>&1 | awk '{print $2}' | awk -F "." '{print $1,$2}' |sed 's/ /./'
+  ignore_errors: true
+  register: pip_installed_version
+  changed_when: false
+  check_mode: no
+
+- name: Fail if pip is not installed
+  fail: 
+    msg: Pip must be installed
+  when: pip_installed_version.rc != 0
+
+- name: Convert pip_version to int
+  set_fact:
+    pip_current_version: "{{ pip_installed_version.stdout | regex_replace('\\.', '') }}"
+    pip_min_version:     "{{ pip_version | regex_replace('\\.', '') }}"
+  when: pip_version is defined
+
+- name: "PIP versions: current={{ pip_current_version }}; minimum={{ pip_version }}"
+  shell: bash -c true
+  changed_when: false
+  when: pip_version is defined 
+
+- name: "Fail if pip version is not at least {{ pip_version }}"
+  fail: msg="pip version must be at least {{ pip_version }}"
+  when: pip_version is defined and ( (pip_current_version|int) < (pip_min_version|int) )
+
+

@@ -1,0 +1,19 @@
+---
+  #
+  # Check that gituser and gitpassword are defined
+  #
+  - fail:
+      msg: "Must define the variables gituser and gitpassword"
+    when: gituser is not defined or not gituser or gitpassword is not defined or not gitpassword
+
+
+  #
+  # Get the code from {{ repo_url }} into {{ app_dir }}
+  # 
+  - name: "Get the app code from git repository https://{{ git_repo_link }}"
+    git: 
+      repo: "{{ git_repo_url }}"
+      dest: "{{ app_dir }}" 
+      #force: yes
+      version: master
+    environment: "{{ proxy_env }}"

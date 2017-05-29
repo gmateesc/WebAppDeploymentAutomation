@@ -1,0 +1,21 @@
+#
+# Run with
+#
+#  ansible-playbook  -e gituser=$GIT_USER -e gitpassword=$GIT_PASSWORD deploy_web_service.yml
+#
+# If http_proxy or https_proxy is required, then define them in group_vars/all
+#
+---
+- hosts: all
+  gather_facts: no
+  become: no
+
+  roles:
+  - { role: "http_proxy" }
+  - { role: "python" }
+  - { role: "pip" }
+  - { role: "git" }
+  - { role: "venv" }
+  - { role: "app" }
+
+

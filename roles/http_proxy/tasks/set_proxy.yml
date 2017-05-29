@@ -1,0 +1,95 @@
+---
+
+#
+# Parameters: the name and value of the http/https proxy 
+#
+# Two cases
+#
+#   - httpx_proxy_name = "http_proxy"  and
+#   - httpx_proxy      = "{{ http_proxy }}"  the default defined in defined in group_vars/all
+#
+# and
+#
+#   - httpx_proxy_name = "https_proxy" and
+#   - httpx_proxy      = "{{ https_proxy }}"  the default defined in defined in group_vars/all
+#
+
+
+
+  # 
+  # 1. Set proxy_default and proxt_env_var
+
+  #
+  # 1.0 Initialize proxy_default and proxy_env_var
+  #
+  - name: Initialize proxy_default and proxy_env_var
+    set_fact:
+      proxy_default:
+      proxy_env_var:
+      
+  #
+  # 1.1 Set proxy_default, i.e., proxy to be used 
+  #     if the env var http[s]_proxy is not defined
+  #
+  - name: Set fact proxy_default = "{{ httpx_proxy }}"
+    set_fact:
+      proxy_default: "{{ httpx_proxy }}"
+    when: httpx_proxy is defined and httpx_proxy
+
+
+  # 
+  # 1.2 Set proxy_env_var to http[s]_proxy environment variable
+  #
+  - name: Set fact proxy_env_var
+    set_fact:
+      proxy_env_var: "{{ lookup('env', httpx_proxy_name) }}"
+    when: lookup('env', httpx_proxy_name) != ''
+
+
+
+
+  # 
+  # 2. Set proxy using either 
+  #
+  #      o proxy_env_var  if defined (see above) and not empty
+  # 
+  #      o proxy_default  if above not defined and this is defined 
+  #                       in "group_vars/all" as http[s]_proxy
+  #
+
+  # 2.1 Set proxy = proxy_default
+  - name: Set proxy = proxy_default if proxy_default is set (current value "{{ proxy_default }}")
+    set_fact:
+       proxy: "{{ proxy_default }}"
+    when: proxy_default is defined and proxy_default and proxy_default != ''
+
+  #- name: Show proxy = {{ proxy }} before testing proxy_env_var
+  #  debug: var=proxy verbosity=0
+
+
+  # 2.2 Overwrite proxy = proxy_env_var when proxy_env_var is defined
+  - name: Overwrite proxy when proxy_env_var is set (current value "{{ proxy_env_var }}")
+    set_fact:
+       proxy: "{{ proxy_env_var }}"
+    when: proxy_env_var is defined and proxy_env_var and proxy_env_var != ''
+
+
+
+
+  #
+  # 3. Set proxy_env
+  #
+
+  #
+  # 3.1 Set proxy_env if {{ proxy }} var is defined
+  #
+  - name: Set hash proxy_env.http_proxy = proxy if proxy is defined (current values {{ proxy }})
+    set_fact:
+      proxy_env: "{{ proxy_env | default({}) |combine({item.0: item.1}) }}"
+    with_together:
+    - "{{ httpx_proxy_name }}"
+    - "{{ proxy }}"  
+    when: proxy is defined and proxy 
+
+
+

@@ -1,0 +1,25 @@
+---
+#
+# Settings defined here:
+#
+# 1. Override role defaults, e.g., ../roles/*/defaults
+#
+# 2. Are overriden by role vars, e.g., ../roles/*/vars
+#
+
+project_dir: /tmp/Scheduler_app
+
+python_version: 2.6
+python_virtualenv_path: "{{ project_dir}}/venv"
+
+app_dir:  "{{ project_dir}}/app"
+
+
+#
+# If http/https proxy is needed, set the environment 
+# variable http_proxy and https_proxy or set the 
+# variables below. Setting the variables here is 
+# needed when different host groups use different proxies.
+#
+#http_proxy: YOUR_HTTP_PROXY
+#https_proxy: YOUR_HTTPS_PROXY

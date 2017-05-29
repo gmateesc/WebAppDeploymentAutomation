@@ -1,0 +1,30 @@
+---
+
+#
+# IP address and port to which the web service listens
+#
+webserver_host: "0.0.0.0"
+webserver_port: 8888
+
+#
+# Service name and name of program providing the service
+#
+service_name: WebService
+service_code: schedule_service.py
+service_script: "{{ service_code | replace('.py', '.sh') }}"
+
+
+#
+# Directory where to deploy the SSL keys and cert
+#
+ssl_cert_root: "{{ app_dir }}/ssl"
+
+#
+# Directory where to store the JSON documents POSTed by client
+#
+service_document_root: "{{ app_dir}}/status"
+
+#
+# Log directory of the web service
+#
+service_log_dir: "{{ app_dir}}/log"

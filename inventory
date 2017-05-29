@@ -1,0 +1,19 @@
+#
+# If the default version of python is not 2.6 or 2.7, 
+# set ansible_python_interpreter to point to the correct 
+# version of Python, e.g., 
+#
+# localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python
+#
+
+#
+# Add remote machines here using one of these formats
+#
+#  HOST_NAME_OR_IP_ADDR
+#  HOST_NAME_OR_IP_ADDR ansible_user=USER
+#  HOST_NAME_OR_IP_ADDR ansible_user=USER  ssh_args="-o ProxyCommand ssh -W %h:%p JUMP_HOST"
+[webservers]
+localhost ansible_connection=local
+
+[all:children]
+webservers

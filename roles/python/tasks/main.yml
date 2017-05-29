@@ -1,0 +1,34 @@
+
+  - name: "Check python version >= {{ python_version}}"
+    shell: python --version 2>&1 | awk '{print $2}' | awk -F "." '{print $1,$2}' |sed 's/ /./'
+    register: py_installed_version
+    changed_when: false
+
+  - name: Convert py_installed_version to integer
+    set_fact:
+      py_current_version: "{{ py_installed_version.stdout | regex_replace('\\.', '') }}"
+      py_min_version:     "{{ python_version | regex_replace('\\.', '') }}"
+    when: python_version is defined
+
+
+  - name: |
+      Show python current vs. minimum required versions
+        current = {{ py_installed_version.stdout }} 
+        minimum = {{ python_version }}
+    shell: bash -c true
+    changed_when: false
+    when: python_version is defined
+
+
+  - name: Fail if wrong python version
+    fail: 
+      msg: | 
+       Python version must be at least {{ python_version }} and less than 3.0
+       It might help to set ansible_python_interpreter in the inventory
+    when: 
+      python_version is defined and 
+      ( ( (py_current_version|int) < (py_min_version|int) ) or ( (py_current_version|int) >= 30) )
+
+
+#    when: python_version is defined and (py_current_version < py_min_version) 
+#    when: python_version is defined and ((py_current_version < py_min_version) or (py_current_version > 30))

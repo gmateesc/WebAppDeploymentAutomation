@@ -1,0 +1,92 @@
+---
+
+#
+# Configure the web service application
+#
+
+#
+# 1. Create the configurable directories
+#
+
+#    - ssl_cert_root            for SSL certificate and key directories
+#    - service_document_root    for persisting the JSON documents
+#    - service_log dir          for web service log data
+#
+- name: Create document_root and SSL certificate/key directories
+  file: 
+    path: "{{ item }}"
+    state: directory
+  with_items: 
+  - "{{ ssl_cert_root }}"
+  - "{{ service_document_root }}"
+  - "{{ service_log_dir }}"
+
+
+#
+# 2. Deploy the service start/stop script
+#
+- name: Deploy the service start/stop script
+  template: 
+    src: "{{ item }}.j2"
+    dest: "{{ app_dir }}/{{ service_name }}/{{ item }}"
+    mode: 0755
+  with_items:
+  - "{{ service_script }}"
+
+
+#
+# 3. Set the configurable parameters in the config module
+#
+- name: Create initial config module file
+  copy:
+    src: "{{ app_dir }}/{{ service_name }}/conf/__init__.py.template"
+    dest: "{{ app_dir }}/{{ service_name }}/conf/__init__.py"
+    remote_src: true
+
+- name: "Patch config module to set SSL_CERT_DIR = {{ ssl_cert_root }}"
+  lineinfile:
+    dest: "{{ app_dir }}/{{ service_name }}/conf/__init__.py"
+    regexp: "^#SSL_CERT_DIR"
+    line:  "SSL_CERT_DIR = \"{{ ssl_cert_root }}\"" 
+
+- name: "Patch config module to set DOCUMENT_ROOT = {{ service_document_root }}"
+  lineinfile:
+    dest: "{{ app_dir }}/{{ service_name }}/conf/__init__.py"
+    regexp: "^#DOCUMENT_ROOT"
+    line:  "DOCUMENT_ROOT = \"{{ service_document_root }}\"" 
+
+- name: Patch config module to set IP address to the web service listens = {{ webserver_host }}"
+  lineinfile:
+    dest: "{{ app_dir }}/{{ service_name }}/conf/__init__.py"
+    regexp: "^#HOST"
+    line:  "HOST = \"{{ webserver_host }}\"" 
+
+- name: "Patch config module to set the port to which the web service listens = {{ webserver_port }}"
+  lineinfile:
+    dest: "{{ app_dir }}/{{ service_name }}/conf/__init__.py"
+    regexp: "^#PORT"
+    line:  "PORT = {{ webserver_port }}" 
+
+
+#
+# 4. Deploy SSL certificate and key
+#
+- name: Deploy SSL certificate and key to {{ ssl_cert_root }}
+  copy:
+    src: "{{ item }}"
+    dest: "{{ ssl_cert_root }}/"
+    remote_src: true
+  with_items:
+  - "{{ app_dir }}/{{ service_name }}/ssl/key.pem"
+  - "{{ app_dir }}/{{ service_name }}/ssl/cert.pem"
+
+
+#
+# 5. Show how to start the app
+#
+- name: |
+    Web servive setup complete. 
+          Here is how to start, stop the service and get status
+          {{ app_dir }}/{{ service_name }}/{{ service_script }} {start|stop|status}
+  debug: msg="" verbosity=4
+

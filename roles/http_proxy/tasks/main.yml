@@ -1,0 +1,49 @@
+---
+#
+# This role sets the hash proxy_env to
+#
+#   proxy_env:
+#      http_proxy: "{{ http_proxy }}" 
+#      https_proxy: "{{ https_proxy }}" 
+#
+#  or null, if none of {{ http_proxy }} and {{ https_proxy }} are defined
+#  
+#  The variables {{ http_proxy }} and {{ https_proxy }} are defined as
+#
+#                   the environment variable http[s]_proxy, if it is defined
+#  http[s]_proxy = 
+#                   the ansible variable http[s]_proxy if the environement 
+#                   variable http[s]_proxy is not defined and the 
+#                   ansible variable http[s]_proxy is defined, e.g., in 
+#                   group_vars/all
+#
+
+
+#
+# 1. Set proxy_env 
+#
+
+- include: set_proxy.yml httpx_proxy_name="{{ proxy_item.name }}" httpx_proxy="{{ proxy_item.value }}"
+  with_items:
+  - { "name": "http_proxy", value: "{{ http_proxy }}" }
+  - { "name": "https_proxy", value: "{{ https_proxy }}" }
+  loop_control:
+    loop_var: proxy_item
+  static: no
+
+
+#
+# 2. Set proxy_env null if not defined
+#
+- name: Set proxy_env default if it is not defined at this point
+  set_fact:
+    proxy_env: 
+  when: proxy_env is not defined
+
+
+
+#
+# 3. Show proxy_env
+#
+- name: "Show proxy_env"
+  debug: var=proxy_env verbosity=0

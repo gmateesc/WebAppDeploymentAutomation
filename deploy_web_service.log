@@ -1,0 +1,128 @@
+
+PLAY [all] *****************************************************************************************
+
+TASK [http_proxy : include] ************************************************************************
+included: /Users/gmateesc/Spaces/Languages/Python/GIT/DeployAuto/roles/http_proxy/tasks/set_proxy.yml for localhost
+included: /Users/gmateesc/Spaces/Languages/Python/GIT/DeployAuto/roles/http_proxy/tasks/set_proxy.yml for localhost
+
+TASK [http_proxy : Initialize proxy_default and proxy_env_var] *************************************
+ok: [localhost]
+
+TASK [http_proxy : Set fact proxy_default = ""] ****************************************************
+skipping: [localhost]
+
+TASK [http_proxy : Set fact proxy_env_var] *********************************************************
+skipping: [localhost]
+
+TASK [http_proxy : Set proxy = proxy_default if proxy_default is set (current value "")] ***********
+skipping: [localhost]
+
+TASK [http_proxy : Overwrite proxy when proxy_env_var is set (current value "")] *******************
+skipping: [localhost]
+
+TASK [http_proxy : Set hash proxy_env.http_proxy = proxy if proxy is defined (current values {{ proxy }})] ***
+skipping: [localhost]
+
+TASK [http_proxy : Initialize proxy_default and proxy_env_var] *************************************
+ok: [localhost]
+
+TASK [http_proxy : Set fact proxy_default = ""] ****************************************************
+skipping: [localhost]
+
+TASK [http_proxy : Set fact proxy_env_var] *********************************************************
+skipping: [localhost]
+
+TASK [http_proxy : Set proxy = proxy_default if proxy_default is set (current value "")] ***********
+skipping: [localhost]
+
+TASK [http_proxy : Overwrite proxy when proxy_env_var is set (current value "")] *******************
+skipping: [localhost]
+
+TASK [http_proxy : Set hash proxy_env.http_proxy = proxy if proxy is defined (current values {{ proxy }})] ***
+skipping: [localhost]
+
+TASK [http_proxy : Set proxy_env default if it is not defined at this point] ***********************
+ok: [localhost]
+
+TASK [http_proxy : Show proxy_env] *****************************************************************
+ok: [localhost] => {
+    "changed": false, 
+    "proxy_env": null
+}
+
+TASK [python : Check python version >= 2.6] ********************************************************
+ok: [localhost]
+
+TASK [python : Convert py_installed_version to integer] ********************************************
+ok: [localhost]
+
+TASK [python : Show python current vs. minimum required versions
+  current = 2.7 
+  minimum = 2.6] *
+ok: [localhost]
+
+TASK [python : Fail if wrong python version] *******************************************************
+skipping: [localhost]
+
+TASK [pip : Get the version of pip, if it is installed] ********************************************
+ok: [localhost]
+
+TASK [pip : Fail if pip is not installed] **********************************************************
+skipping: [localhost]
+
+TASK [pip : Convert pip_version to int] ************************************************************
+ok: [localhost]
+
+TASK [pip : PIP versions: current=90; minimum=7.1] *************************************************
+ok: [localhost]
+
+TASK [pip : Fail if pip version is not at least 7.1] ***********************************************
+skipping: [localhost]
+
+TASK [git : fail] **********************************************************************************
+skipping: [localhost]
+
+TASK [git : Get the app code from git repository https://github.com/DoodleScheduling/devops-gabriel-mateescu] ***
+ok: [localhost]
+
+TASK [venv : Ensure virtualenv is installed] *******************************************************
+ok: [localhost]
+
+TASK [venv : Install required python packages in the virtual env "/tmp/Scheduler_app/venv"] ********
+ok: [localhost]
+
+TASK [app : Create document_root and SSL certificate/key directories] ******************************
+ok: [localhost] => (item=/tmp/Scheduler_app/app/ssl)
+ok: [localhost] => (item=/tmp/Scheduler_app/app/status)
+ok: [localhost] => (item=/tmp/Scheduler_app/app/log)
+
+TASK [app : Deploy the service start/stop script] **************************************************
+ok: [localhost] => (item=schedule_service.sh)
+
+TASK [app : Create initial config module file] *****************************************************
+changed: [localhost]
+
+TASK [app : Patch config module to set SSL_CERT_DIR = /tmp/Scheduler_app/app/ssl] ******************
+changed: [localhost]
+
+TASK [app : Patch config module to set DOCUMENT_ROOT = /tmp/Scheduler_app/app/status] **************
+changed: [localhost]
+
+TASK [app : Patch config module to set IP address to the web service listens = 0.0.0.0"] ***********
+changed: [localhost]
+
+TASK [app : Patch config module to set the port to which the web service listens = 8888] ***********
+changed: [localhost]
+
+TASK [app : Deploy SSL certificate and key to /tmp/Scheduler_app/app/ssl] **************************
+ok: [localhost] => (item=/tmp/Scheduler_app/app/WebService/ssl/key.pem)
+ok: [localhost] => (item=/tmp/Scheduler_app/app/WebService/ssl/cert.pem)
+
+TASK [app : Web servive setup complete. 
+      Here is how to start, stop the service and get status
+      /tmp/Scheduler_app/app/WebService/schedule_service.sh {start|stop|status}] ***
+skipping: [localhost]
+
+PLAY RECAP *****************************************************************************************
+localhost                  : ok=23   changed=5    unreachable=0    failed=0   
+
