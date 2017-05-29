@@ -8,6 +8,7 @@
 - [Simple usage of the Ansible code](#p1)
   - [Get the code from Git](#p11)
   - [Run ansible-playbook](#p12)
+  - [Start the service](#p13)
 
 - [The inventory file](#p1a)
 
@@ -66,7 +67,31 @@ This will deploy the web app to the local host.
 An example output from running the playbook is shown [here](https://github.com/gmateesc/WebAppDeploymentAutomation/blob/master/doc/deploy_web_service.log).
 
 
-To deploy to other hosts, edit the inventory file and add the hosts.
+To deploy to other hosts, edit the [inventory file](#p1a) and add the desired hosts.
+
+
+
+<a name="p13" id="p13"></a>
+## Start the service
+
+
+Run the start/stop script created by Ansible. For the above run the script is:
+
+```script
+  $ egrep "start\|stop" deploy_web_service.log 
+  /tmp/Scheduler_app/app/WebService/schedule_service.sh {start|stop|status}
+```
+
+
+So one can start the service with
+
+```script
+  $ /tmp/Scheduler_app/app/WebService/schedule_service.sh start
+```
+
+
+
+
 
 
 <a name="p1a" id="p1a"></a>
