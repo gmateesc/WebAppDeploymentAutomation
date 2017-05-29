@@ -56,9 +56,10 @@ stop () {
  
   fi  
 
-  rm -r $pid_file
+  rm -r {{ app_dir }}/{{ service_name }}/$pid_file
 
 }
+
 
 
 case "$1" in
@@ -79,10 +80,4 @@ case "$1" in
   *)
     echo "Usage: $0 {start|stop|restart|status}"
 esac
-
-
-
-
-
-
 
