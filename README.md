@@ -128,13 +128,18 @@ Additionally, group-level variables are defined in group_vars/all
 
 
 
-The file group_vars/all defines application configuration, including: 
+The file *group_vars/all* defines application configuration, including: 
 
 - the location where to deploy the web app: variable project_dir
 
 - the minimum required Python version;
 
 - the directory where to store the JSON documents POSTed by client: varible service_document_root;
+
+- the proxy to use for accesing http and https resources: variables http_proxy and https_proxy;
+
+
+The full file *group_vars/all* is:
 
 
 ```yaml
