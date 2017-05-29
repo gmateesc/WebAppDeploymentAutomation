@@ -9,13 +9,11 @@
   - [Get the code from Git](#p11)
   - [Run ansible-playbook](#p12)
 
-
-
 - [Description of the playbook](#p2)
 
 - [Configuration of the web app](#p3)
-
-
+  - [File group_vars/all](#p31)
+  - [File roles/app/defaults/main.yml](#p32)
 
 
 
@@ -171,6 +169,8 @@ app_dir:  "{{ project_dir}}/app"
 #http_proxy: YOUR_HTTP_PROXY
 #https_proxy: YOUR_HTTPS_PROXY
 ```
+
+
 
 
 
