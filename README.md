@@ -9,6 +9,8 @@
   - [Get the code from Git](#p11)
   - [Run ansible-playbook](#p12)
 
+- [The inventory file](#p1a)
+
 - [Description of the playbook](#p2)
 
 - [Configuration of the web app](#p3)
@@ -58,10 +60,46 @@ $ ansible-playbook  -e gituser=$GIT_USER -e gitpassword=$GIT_PASSWORD deploy_web
 ```
 
 
-This will deploy the web app to the local host. An example output from running the playbook is shown [here](https://github.com/gmateesc/WebAppDeploymentAutomation/blob/master/doc/deploy_web_service.log).
+This will deploy the web app to the local host. 
 
 
-To deploy to other hosts, edit the inventory file in the WebAppDeploymentAutomation directory and add the hosts.
+An example output from running the playbook is shown [here](https://github.com/gmateesc/WebAppDeploymentAutomation/blob/master/doc/deploy_web_service.log).
+
+
+To deploy to other hosts, edit the inventory file and add the hosts.
+
+
+<a name="p1a" id="p1a"></a>
+## The inventory file
+
+
+The default inventory file includes the local host, and shows how to add remote hosts, 
+and, depending on the site settings, use a different remote user or use a jump-host 
+to access the remote host:
+
+```script
+$ more inventory#
+# If the default version of python is not 2.6 or 2.7, 
+# set ansible_python_interpreter to point to the correct 
+# version of Python, e.g., 
+#
+# localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python
+#
+
+#
+# Add remote machines here using one of these formats
+#
+#  HOST_NAME_OR_IP_ADDR
+#  HOST_NAME_OR_IP_ADDR ansible_user=USER
+#  HOST_NAME_OR_IP_ADDR ansible_user=USER  ssh_args="-o ProxyCommand ssh -W %h:%p JUMP_HOST"
+[webservers]
+localhost ansible_connection=local
+
+[all:children]
+webservers
+```
+
+
 
 
 
